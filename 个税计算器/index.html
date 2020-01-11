@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"></meta>
+    <title>个税计算器</title>
+    <script src="./vue.js"></script>
+</head>
+
+<body>
+    <div id="root">
+        税前收入
+        <input v-model="inputValue"></input>
+        <button @click="handleSubmit">提交</button>
+        <br>
+        <p v-if="submitOrNot">税前收入：{{salaryBeforeTax}}</p>
+        <br>
+        <p v-if="submitOrNot">交税金额：{{tax}}</p>
+        <br>
+        <p v-if="submitOrNot">税后收入：{{salaryAfterTax}}</p>
+    </div>
+    <script>
+        new Vue({
+            el: '#root',
+            data: {
+                inputValue: '',
+                submitOrNot: false,
+                salaryBeforeTax: 0,
+                tax: 0,
+                salaryAfterTax: 0,
+            },
+            methods: {
+                calTax(salaryBeforeTax) {
+                    if (salaryBeforeTax <= 1500)
+                        return salaryBeforeTax * 0.97 //1455
+                    if (salaryBeforeTax > 1500 && salaryBeforeTax <= 4500) {
+                        // console.log(salaryBeforeTax * 0.1 - 105) 这个演示一下计算交税金额所用的速算扣除数 实际代码并不需要
+                        return (salaryBeforeTax - 1500) * 0.9 + 1455 //4155
+                    }
+                    if (salaryBeforeTax > 4500 && salaryBeforeTax <= 9000)
+                        return (salaryBeforeTax - 4500) * 0.8 + 4155 //7755
+                    if (salaryBeforeTax > 9000 && salaryBeforeTax <= 35000)
+                        return (salaryBeforeTax - 9000) * 0.75 + 7755 //27255
+                    if (salaryBeforeTax > 35000 && salaryBeforeTax <= 55000)
+                        return (salaryBeforeTax - 35000) * 0.7 + 27255 //41255
+                    if (salaryBeforeTax > 55000 && salaryBeforeTax <= 80000)
+                        return (salaryBeforeTax - 55000) * 0.65 + 41255 //57505
+                    if (salaryBeforeTax > 80000)
+                        return (salaryBeforeTax - 80000) * 0.55 + 57505
+                },
+                handleSubmit() {
+                    this.submitOrNot = true
+                    this.salaryBeforeTax = this.inputValue
+                    this.salaryAfterTax = this.calTax(this.inputValue)
+                    this.tax = this.salaryBeforeTax - this.salaryAfterTax
+                    this.inputValue = ''
+                },
+            },
+            beforeCreate() {
+                var _this = this
+                console.log(_this)
+                document.onkeydown = function(e) {
+                    if (e.keyCode == 13 && _this.inputValue !== '') {
+                        //console.log(this) 很显然此处的this是document
+                        _this.handleSubmit()
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
