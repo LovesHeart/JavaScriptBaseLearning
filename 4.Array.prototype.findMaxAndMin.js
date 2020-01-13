@@ -27,6 +27,10 @@ Array.prototype.findMaxAndMin=(arr)=>{
     arr = arr.myQuickSort(arr)//将arr用log(n)的复杂度变为有序数组
     let min=arr[0]
     let max=arr[arr.length-1]
-    return [min,max]
+    // return [min,max]
+    return{
+        'min':min,
+        'max':max,
+    }
 }
 console.log(a.findMaxAndMin(a))
